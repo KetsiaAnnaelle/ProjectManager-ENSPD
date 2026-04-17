@@ -50,44 +50,31 @@ const Login = () => {
     });
 
     return (
-        <div className="flex min-h-screen bg-neutral-900">
-            {/* Colonne Gauche - Image en Pixel */}
-            <div className="hidden lg:flex w-1/2 relative bg-blue-950 items-center justify-center overflow-hidden border-r border-blue-900/50">
-                <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-                    <div className="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-blue-600/20 blur-[100px] animate-pulse-slow"></div>
-                    <div className="absolute bottom-[10%] -right-[10%] w-[60%] h-[60%] rounded-full bg-indigo-500/20 blur-[100px] animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
-                </div>
-                <img 
-                    src="/images/pixel_login.png" 
-                    alt="Login Terminal Pixel Art" 
-                    className="relative z-10 w-3/4 max-w-md animate-float drop-shadow-2xl opacity-90 hover:opacity-100 transition-opacity" 
-                />
-            </div>
-
-            {/* Colonne Droite - Formulaire */}
-            <div className="flex-1 flex flex-col items-center justify-center p-4 relative z-10">
-                <Card className="w-full max-w-[420px] bg-transparent border-0 shadow-none">
-                    <CardHeader className="space-y-5 text-center pb-8 pt-8">
-                        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-blue-600 shadow-lg shadow-blue-500/30 animate-slide-up">
-                            <FolderKanban className="h-10 w-10 text-white" />
+        <div className="flex min-h-screen bg-slate-50 items-center justify-center p-4">
+            <div className="w-full max-w-md animate-slide-up">
+                <Card className="bg-white border-0 shadow-2xl shadow-slate-200/50 rounded-2xl overflow-hidden">
+                    <div className="h-2 bg-gradient-to-r from-blue-600 via-blue-500 to-red-500"></div>
+                    <CardHeader className="space-y-4 text-center pb-6 pt-10">
+                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+                            <FolderKanban className="h-8 w-8" />
                         </div>
-                        <div className="animate-slide-up space-y-1.5" style={{ animationFillMode: 'both', animationDelay: '100ms' }}>
-                            <CardTitle className="text-3xl font-extrabold tracking-tight text-white">Connexion</CardTitle>
-                            <CardDescription className="text-neutral-400 text-base">
-                                Accédez à votre espace projet sécurisé
+                        <div className="space-y-2">
+                            <CardTitle className="text-3xl font-bold tracking-tight text-slate-900">Bon retour !</CardTitle>
+                            <CardDescription className="text-slate-500 text-base">
+                                Connectez-vous à votre espace projet sécurisé.
                             </CardDescription>
                         </div>
                     </CardHeader>
                     <form onSubmit={formik.handleSubmit}>
-                        <CardContent className="space-y-5 animate-slide-up px-8" style={{ animationFillMode: 'both', animationDelay: '200ms' }}>
+                        <CardContent className="space-y-4 px-8">
                             {erreurAPI && (
-                                <div className="p-4 text-sm text-red-200 bg-red-950/50 rounded-xl border border-red-500/30 flex items-center gap-2.5">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></div>
+                                <div className="p-4 text-sm text-red-700 bg-red-50 rounded-xl border border-red-100 flex items-center gap-3">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-red-600 shrink-0"></div>
                                     {erreurAPI}
                                 </div>
                             )}
-                            <div className="space-y-2.5">
-                                <Label htmlFor="email" className="text-neutral-300 font-medium">Adresse email</Label>
+                            <div className="space-y-2">
+                                <Label htmlFor="email" className="text-slate-700 font-medium text-sm">Adresse email</Label>
                                 <Input 
                                     id="email" 
                                     name="email"
@@ -96,16 +83,16 @@ const Login = () => {
                                     value={formik.values.email}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    className={`bg-white/5 border-white/10 text-white placeholder:text-neutral-600 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-all h-12 rounded-xl px-4 ${formik.touched.email && formik.errors.email ? 'border-red-500/50 ring-red-500/50' : ''}`}
+                                    className={`bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus-visible:ring-blue-600 focus-visible:border-blue-600 transition-all h-12 rounded-xl px-4 ${formik.touched.email && formik.errors.email ? 'border-red-500 ring-red-500/20' : ''}`}
                                 />
                                 {formik.touched.email && formik.errors.email ? (
-                                    <p className="text-sm text-red-400 mt-1">{formik.errors.email}</p>
+                                    <p className="text-sm text-red-500 mt-1">{formik.errors.email}</p>
                                 ) : null}
                             </div>
-                            <div className="space-y-2.5">
+                            <div className="space-y-2">
                                 <div className="flex items-center justify-between">
-                                    <Label htmlFor="motDePasse" className="text-neutral-300 font-medium">Mot de passe</Label>
-                                    <a href="#" className="text-sm font-medium text-blue-500 hover:text-blue-400 transition-colors">Oublié ?</a>
+                                    <Label htmlFor="motDePasse" className="text-slate-700 font-medium text-sm">Mot de passe</Label>
+                                    <a href="#" className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors">Oublié ?</a>
                                 </div>
                                 <Input 
                                     id="motDePasse" 
@@ -115,25 +102,25 @@ const Login = () => {
                                     value={formik.values.motDePasse}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    className={`bg-white/5 border-white/10 text-white placeholder:text-neutral-600 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-all h-12 rounded-xl px-4 ${formik.touched.motDePasse && formik.errors.motDePasse ? 'border-red-500/50 ring-red-500/50' : ''}`}
+                                    className={`bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus-visible:ring-blue-600 focus-visible:border-blue-600 transition-all h-12 rounded-xl px-4 ${formik.touched.motDePasse && formik.errors.motDePasse ? 'border-red-500 ring-red-500/20' : ''}`}
                                 />
                                 {formik.touched.motDePasse && formik.errors.motDePasse ? (
-                                    <p className="text-sm text-red-400 mt-1">{formik.errors.motDePasse}</p>
+                                    <p className="text-sm text-red-500 mt-1">{formik.errors.motDePasse}</p>
                                 ) : null}
                             </div>
                         </CardContent>
-                        <CardFooter className="flex flex-col gap-4 px-8 pb-8 pt-4 animate-slide-up" style={{ animationFillMode: 'both', animationDelay: '300ms' }}>
-                            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white shadow-xl shadow-blue-900/20 h-12 rounded-xl text-base font-semibold transition-all duration-300 border-none" disabled={chargement}>
+                        <CardFooter className="flex flex-col gap-5 px-8 pb-10 pt-4">
+                            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-600/20 h-12 rounded-xl text-base font-medium transition-all duration-300" disabled={chargement}>
                                 {chargement ? (
                                     <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Connexion...</>
                                 ) : (
                                     <><LogIn className="mr-2 h-5 w-5" /> Se connecter</>
                                 )}
                             </Button>
-                            <div className="text-center text-sm text-neutral-400">
+                            <div className="text-center text-sm text-slate-500">
                                 Pas encore de compte ?{' '}
-                                <Link to="/inscription" className="text-blue-500 hover:text-blue-400 font-semibold transition-colors">
-                                    S'inscrire
+                                <Link to="/inscription" className="text-blue-600 hover:text-blue-700 font-semibold transition-colors">
+                                    Créer un compte
                                 </Link>
                             </div>
                         </CardFooter>

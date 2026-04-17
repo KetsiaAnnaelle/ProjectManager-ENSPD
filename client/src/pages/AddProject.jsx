@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import NavBar from '../components/NavBar';
+import { useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -47,10 +47,8 @@ const AddProject = () => {
     });
 
     return (
-        <div className="min-h-screen bg-neutral-100">
-            <NavBar />
-            
-            <main className="container mx-auto px-4 py-12 max-w-2xl">
+        <div className="w-full">
+            <main className="container mx-auto px-4 py-6 max-w-2xl">
                 <div className="mb-6">
                     <Link to="/dashboard">
                         <Button variant="ghost" className="text-neutral-500 hover:text-blue-600 pl-0 hover:bg-transparent -ml-2">

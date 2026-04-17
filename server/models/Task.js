@@ -2,28 +2,53 @@ const baseDeDonnees = require('../config/db');
 
 // Objet pour interagir avec les Tâches
 const ModeleTache = {
-    // Obtenir toutes les tâches d'un projet ciblé
+    // Obtenir toutes les tâches d'un projet ciblé avec leurs multiples assignations
     recupererPourProjet: async (idProjet) => {
-        // On récupère les tâches et on y joint le nom de la personne assignée
-        const requeteSql = `
-            SELECT taches.*, utilisateurs.nom AS nom_assigne 
-            FROM taches 
-            LEFT JOIN utilisateurs ON taches.assigne_a = utilisateurs.id
-            WHERE projet_id = ?
-            ORDER BY taches.date_creation DESC
+        // Obtenir d'abord les tâches
+        const requeteSqlTaches = 'SELECT * FROM taches WHERE projet_id = ? ORDER BY date_creation DESC';
+        const [taches] = await baseDeDonnees.execute(requeteSqlTaches, [idProjet]);
+        
+        if (taches.length === 0) return [];
+
+        // Obtenir toutes les assignations pour ces tâches
+        const idsTaches = taches.map(t => t.id);
+        const requeteSqlAssignations = `
+            SELECT ta.tache_id, u.id, u.nom, u.email 
+            FROM tache_assignations ta 
+            JOIN utilisateurs u ON ta.utilisateur_id = u.id 
+            WHERE ta.tache_id IN (${idsTaches.join(',')})
         `;
-        const [lignes] = await baseDeDonnees.execute(requeteSql, [idProjet]);
-        return lignes;
+        const [assignations] = await baseDeDonnees.execute(requeteSqlAssignations);
+
+        // Fusionner les données
+        const tachesAvecAssignes = taches.map(tache => {
+            tache.assignes = assignations
+                .filter(a => a.tache_id === tache.id)
+                .map(a => ({ id: a.id, nom: a.nom, email: a.email }));
+            return tache;
+        });
+
+        return tachesAvecAssignes;
     },
 
-    // Ajouter une nouvelle tâche à un projet
-    creer: async (idProjet, titre, description, assigneA, statut, echeance) => {
-        // Si aucune personne n'est assignée (chaîne vide), on met null dans la bd
-        const cible = assigneA ? assigneA : null;
-        
-        const requeteSql = 'INSERT INTO taches (projet_id, titre, description, assigne_a, statut, echeance) VALUES (?, ?, ?, ?, ?, ?)';
-        const [resultat] = await baseDeDonnees.execute(requeteSql, [idProjet, titre, description, cible, statut, echeance]);
-        return resultat.insertId;
+    // Ajouter une nouvelle tâche à un projet et créer ses assignations
+    creer: async (idProjet, titre, description, tableauAssignations, statut, echeance) => {
+        const dateEcheance = echeance ? echeance : null;
+        const requeteSql = 'INSERT INTO taches (projet_id, titre, description, statut, echeance) VALUES (?, ?, ?, ?, ?)';
+        const [resultat] = await baseDeDonnees.execute(requeteSql, [idProjet, titre, description, statut, dateEcheance]);
+        const idNouvelleTache = resultat.insertId;
+
+        // Gérer les multiples assignations
+        if (tableauAssignations && Array.isArray(tableauAssignations) && tableauAssignations.length > 0) {
+            // Création dynamique des (valeurs) pour INSERT
+            const placeHolders = tableauAssignations.map(() => '(?, ?)').join(', ');
+            const params = tableauAssignations.flatMap(idUtilisateur => [idNouvelleTache, idUtilisateur]);
+            
+            const requeteAssignation = `INSERT INTO tache_assignations (tache_id, utilisateur_id) VALUES ${placeHolders}`;
+            await baseDeDonnees.execute(requeteAssignation, params);
+        }
+
+        return idNouvelleTache;
     },
 
     // Modifier seulement le statut d'une tâche

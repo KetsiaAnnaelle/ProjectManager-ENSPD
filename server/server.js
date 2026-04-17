@@ -22,11 +22,13 @@ app.get('/api', (requete, reponse) => {
 const routesAuthentification = require('./routes/authRoutes');
 const routesProjets = require('./routes/projectRoutes');
 const routesTaches = require('./routes/taskRoutes');
+const routesUtilisateurs = require('./routes/userRoutes');
 
 // Définitions des URL de base pour nos différentes fonctionnalités
 app.use('/api/auth', routesAuthentification); // Tout ce qui concerne la connexion/inscription
 app.use('/api/projets', routesProjets); // Tout ce qui concerne les projets
 app.use('/api/taches', routesTaches); // Tout ce qui concerne les tâches
+app.use('/api/utilisateurs', routesUtilisateurs); // Tout ce qui concerne les utilisateurs
 
 // Définition du port sur lequel le serveur va écouter (Port 5000 par défaut)
 const portServeur = process.env.PORT || 5000;

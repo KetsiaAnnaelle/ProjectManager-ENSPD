@@ -24,4 +24,7 @@ router.patch('/:idTache/statut', [
     verifierValidation
 ], ControllerTache.miseAJourStatut);
 
+// (GET /api/taches/liste/toutes) -> Obtenir de manière globale
+router.get('/liste/toutes', ControllerTache.toutesLesTaches);
+
 module.exports = router;

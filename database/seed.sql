@@ -21,7 +21,16 @@ INSERT INTO `projets` (`titre`, `description`, `createur_id`) VALUES
 -- Ajout de tâches de test
 -- -----------------------------------------------------
 -- On attribue des tâches aux projets créés
-INSERT INTO `taches` (`projet_id`, `titre`, `description`, `assigne_a`, `statut`, `echeance`) VALUES
-(1, 'Maquette Figma', 'Créer les maquettes des pages d\'accueil et de contact.', 2, 'À faire', '2026-05-01'),
-(1, 'Configuration du serveur', 'Mettre en place le serveur Node.js et Express.', 1, 'En cours', '2026-04-20'),
-(2, 'Conception de la base de données', 'Faire un schéma de la base de données pour l\'application.', 1, 'Terminé', '2026-04-10');
+INSERT INTO `taches` (`id`, `projet_id`, `titre`, `description`, `statut`, `echeance`) VALUES
+(1, 1, 'Maquette Figma', 'Créer les maquettes des pages d\'accueil et de contact.', 'À faire', '2026-05-01'),
+(2, 1, 'Configuration du serveur', 'Mettre en place le serveur Node.js et Express.', 'En cours', '2026-04-20'),
+(3, 2, 'Conception de la base de données', 'Faire un schéma de la base de données pour l\'application.', 'Terminé', '2026-04-10');
+
+-- -----------------------------------------------------
+-- Assignation des tâches
+-- -----------------------------------------------------
+INSERT INTO `tache_assignations` (`tache_id`, `utilisateur_id`) VALUES
+(1, 2), -- Maquette assignée à Membre
+(2, 1), -- Serveur assigné à Admin
+(3, 1), -- Conception DB assignée à Admin
+(1, 1); -- Test d'assignation multiple: Maquette aussi assignée à Admin

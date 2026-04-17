@@ -1,8 +1,7 @@
 import React, { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../store/AuthContext';
-import { LogOut, LayoutDashboard, PlusCircle, FolderKanban } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { LogOut, User, FolderKanban } from 'lucide-react';
 
 const NavBar = () => {
     const { utilisateur, deconnexion } = useContext(AuthContext);
@@ -14,34 +13,34 @@ const NavBar = () => {
     };
 
     return (
-        <nav className="sticky top-0 z-50 w-full border-b border-neutral-200 bg-white/80 backdrop-blur-md shadow-sm">
-            <div className="container mx-auto flex h-16 items-center justify-between px-4">
-                <div className="flex items-center gap-2">
-                    <FolderKanban className="h-6 w-6 text-red-600" />
-                    <span className="text-xl font-bold tracking-tight text-blue-900">ProjetExamen</span>
-                </div>
+        <nav className="sticky top-0 z-40 w-full border-b border-neutral-200 dark:border-neutral-800 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-md shadow-sm h-16">
+            <div className="flex h-full items-center justify-between px-4 sm:px-6">
                 
-                <div className="flex items-center gap-6">
-                    <Link to="/dashboard" className="flex items-center gap-2 text-sm font-medium text-neutral-600 hover:text-blue-600 transition-colors">
-                        <LayoutDashboard className="h-4 w-4" />
-                        Tableau de bord
-                    </Link>
-                    <Link to="/nouveau-projet">
-                        <Button className="bg-red-600 hover:bg-red-700 text-white gap-2 shadow-red-500/20 shadow-md transition-all hover:-translate-y-0.5">
-                            <PlusCircle className="h-4 w-4" />
-                            Nouveau Projet
-                        </Button>
-                    </Link>
+                {/* Espace gauche pour alignement avec la sidebar (Logo mobile si besoin) */}
+                <div className="flex items-center md:hidden gap-2">
+                    <FolderKanban className="h-6 w-6 text-blue-600" />
+                    <span className="text-xl font-bold tracking-tight text-neutral-900 dark:text-white">PM</span>
                 </div>
+                <div className="hidden md:block"></div>
 
+                {/* Profil utilisateur à droite */}
                 <div className="flex items-center gap-4">
-                    <span className="text-sm font-medium text-blue-900">
-                        Hello, <span className="font-bold">{utilisateur?.nom || 'Membre'}</span>
-                    </span>
-                    <Button variant="ghost" size="sm" onClick={gererDeconnexion} className="text-neutral-500 hover:text-red-600 hover:bg-red-50 gap-2">
-                        <LogOut className="h-4 w-4" />
-                        Quitter
-                    </Button>
+                    <div className="flex items-center gap-3 bg-neutral-100 dark:bg-neutral-800 py-1.5 px-3 rounded-full border border-neutral-200 dark:border-neutral-700">
+                        <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold shadow-inner">
+                            <User className="h-4 w-4" />
+                        </div>
+                        <span className="text-sm font-semibold text-neutral-800 dark:text-neutral-200 mr-2">
+                            {utilisateur?.nom || 'Membre'}
+                        </span>
+                    </div>
+                    
+                    <button 
+                        onClick={gererDeconnexion} 
+                        className="text-neutral-500 hover:text-red-600 dark:hover:text-red-500 transition-colors p-2"
+                        title="Se déconnecter"
+                    >
+                        <LogOut className="h-5 w-5" />
+                    </button>
                 </div>
             </div>
         </nav>

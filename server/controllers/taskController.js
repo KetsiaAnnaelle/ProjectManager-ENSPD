@@ -24,7 +24,7 @@ const ControllerTache = {
     nouvelleTache: async (requete, reponse) => {
         try {
             const idProjet = requete.params.idProjet;
-            const { titre, description, assigneA, statut, echeance } = requete.body;
+            const { titre, description, assignes, statut, echeance } = requete.body;
 
             // Il faut s'assurer que le projet est réel
             const projetExistant = await ModeleProjet.trouverParId(idProjet);
@@ -35,7 +35,10 @@ const ControllerTache = {
             // Statut par défaut si non fourni
             const statutFinal = statut || 'À faire';
 
-            const idNouvelleTache = await ModeleTache.creer(idProjet, titre, description, assigneA, statutFinal, echeance);
+            // assignes doit être un tableau d'ID d'utilisateurs
+            const tableauAssignations = Array.isArray(assignes) ? assignes : (assignes ? [assignes] : []);
+
+            const idNouvelleTache = await ModeleTache.creer(idProjet, titre, description, tableauAssignations, statutFinal, echeance);
             reponse.status(201).json({ message: "La tâche a bien été créée.", idTache: idNouvelleTache });
         } catch (erreur) {
             console.error("Erreur nouvelleTache: ", erreur);
@@ -54,6 +57,44 @@ const ControllerTache = {
         } catch (erreur) {
             console.error("Erreur miseAJourStatut: ", erreur);
             reponse.status(500).json({ erreur: "Erreur lors de la mise à jour." });
+        }
+    },
+
+    // Récupérer toutes les tâches (pour le Tableau de bord global)
+    toutesLesTaches: async (requete, reponse) => {
+        try {
+            const ut = requete.utilisateur;
+            const bd = require('../config/db');
+
+            let reqSql = '';
+            let params = [];
+
+            if (ut.role === 'admin') {
+                reqSql = `
+                    SELECT t.*, p.titre as nom_projet 
+                    FROM taches t 
+                    LEFT JOIN projets p ON t.projet_id = p.id 
+                    ORDER BY t.date_creation DESC
+                `;
+            } else {
+                // Membres: on ne voit que ce qui nous est assigné
+                reqSql = `
+                    SELECT t.*, p.titre as nom_projet 
+                    FROM taches t 
+                    JOIN tache_assignations ta ON t.id = ta.tache_id
+                    LEFT JOIN projets p ON t.projet_id = p.id 
+                    WHERE ta.utilisateur_id = ? 
+                    ORDER BY t.date_creation DESC
+                `;
+                params = [ut.id];
+            }
+
+            const [resultats] = await bd.execute(reqSql, params);
+            reponse.status(200).json(resultats);
+
+        } catch (erreur) {
+            console.error("Erreur toutesLesTaches: ", erreur);
+            reponse.status(500).json({ erreur: "Erreur serveur." });
         }
     }
 };

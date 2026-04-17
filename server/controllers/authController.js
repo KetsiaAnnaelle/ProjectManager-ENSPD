@@ -6,7 +6,7 @@ const ControllerAuthentification = {
     // Fonction d'inscription d'un nouvel utilisateur
     inscription: async (requete, reponse) => {
         try {
-            const { email, motDePasse, nom } = requete.body;
+            const { email, motDePasse, nom, role } = requete.body;
 
             // Vérifier si l'utilisateur existe déjà
             const utilisateurExistant = await ModeleUtilisateur.trouverParEmail(email);
@@ -17,8 +17,11 @@ const ControllerAuthentification = {
             // Hacher le mot de passe (le rendre illisible) avec une complexité de 10
             const motDePasseHache = await bcrypt.hash(motDePasse, 10);
 
+            // Validation du rôle pour s'assurer qu'il est correct (sécurité)
+            const roleSelectionne = (role === 'admin' || role === 'membre') ? role : 'membre';
+
             // Créer le profil dans la base de données
-            await ModeleUtilisateur.creer(email, motDePasseHache, nom);
+            await ModeleUtilisateur.creer(email, motDePasseHache, nom, roleSelectionne);
 
             reponse.status(201).json({ message: "Utilisateur créé avec succès !" });
         } catch (erreur) {

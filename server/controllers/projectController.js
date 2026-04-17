@@ -33,9 +33,15 @@ const ControllerProjet = {
     // Ajouter un tout nouveau projet
     nouveauProjet: async (requete, reponse) => {
         try {
+            const profilUtilisateur = requete.utilisateur;
+
+            if (profilUtilisateur.role !== 'admin') {
+                return reponse.status(403).json({ erreur: "Seuls les administrateurs peuvent créer un projet." });
+            }
+
             const { titre, description } = requete.body;
-            // On récupère l'identifiant du créateur depuis le jeton (token) de connexion
-            const createurId = requete.utilisateur.id; 
+            // On récupère l'identifiant du créateur (Admin)
+            const createurId = profilUtilisateur.id; 
 
             const idNouveauProjet = await ModeleProjet.creer(titre, description, createurId);
             
