@@ -1,0 +1,90 @@
+.barre-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--couleur-blanc-pur);
+    padding: 15px 30px;
+    box-shadow: var(--ombre-legere);
+    border-bottom: 3px solid var(--couleur-bleu-primaire);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--couleur-bleu-primaire);
+}
+
+.texte-logo {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.icone-logo {
+    color: var(--couleur-rouge-primaire); /* Touche de rouge pour dynamiser */
+}
+
+.liens-navigation {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.lien-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--couleur-texte-secondaire);
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: var(--arrondi-bouton);
+}
+
+.lien-nav:hover {
+    background-color: var(--couleur-fond-application);
+    color: var(--couleur-bleu-primaire);
+}
+
+.btn-nouveau {
+    background-color: var(--couleur-rouge-primaire);
+    color: var(--couleur-blanc-pur);
+}
+
+.btn-nouveau:hover {
+    background-color: var(--couleur-rouge-fonce);
+    color: var(--couleur-blanc-pur);
+}
+
+.profil-navigation {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nom-utilisateur {
+    font-weight: 600;
+    color: var(--couleur-bleu-primaire);
+}
+
+.btn-deconnexion {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: transparent;
+    border: 1px solid var(--couleur-bordure);
+    padding: 8px 15px;
+    border-radius: var(--arrondi-bouton);
+    color: var(--couleur-texte-secondaire);
+    cursor: pointer;
+    transition: var(--transition-douce);
+}
+
+.btn-deconnexion:hover {
+    background-color: #fee2e2;
+    border-color: var(--couleur-rouge-primaire);
+    color: var(--couleur-rouge-primaire);
+}

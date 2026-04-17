@@ -1,0 +1,29 @@
+/* Fichier contenant toutes les couleurs et paramètres visuels réutilisables */
+:root {
+  /* Nuances de Bleu (Premium & Dynamique) */
+  --couleur-bleu-primaire: #1D3557; /* Bleu océan profond (Premium) */
+  --couleur-bleu-clair: #457B9D; /* Bleu plus clair pour les survols */
+  --couleur-bleu-accent: #0066cc; /* Bleu vif pour les boutons d'action */
+
+  /* Nuances de Rouge (Impactant mais élégant) */
+  --couleur-rouge-primaire: #E63946; /* Rouge dynamique mais pas agressif */
+  --couleur-rouge-fonce: #b01521; /* Rouge foncé pour les alertes ou survols */
+
+  /* Nuances de Blanc et Gris pour le fond et les textes */
+  --couleur-blanc-pur: #FFFFFF; /* Blanc classique */
+  --couleur-fond-application: #F8F9FA; /* Blanc très légèrement grisé pour reposer les yeux */
+  --couleur-texte-principal: #333333; /* Gris très foncé (plus lisible que du noir pur) */
+  --couleur-texte-secondaire: #666666; /* Gris moyen pour les descriptions */
+  --couleur-bordure: #E0E0E0; /* Gris clair pour séparer les éléments */
+
+  /* Paramètres d'arrondis et d'ombres pour un effet moderne et "Glassmorphism" subtil */
+  --arrondi-bouton: 8px; /* Arrondi des boutons */
+  --arrondi-carte: 16px; /* Arrondi des blocs (cartes) de projets */
+  
+  /* Ombre portée pour donner du volume (effet 3D) */
+  --ombre-legere: 0 4px 6px rgba(0, 0, 0, 0.05);
+  --ombre-survol: 0 10px 15px rgba(0, 0, 0, 0.1);
+  
+  /* Transitions douces pour les survols (micro-animations) */
+  --transition-douce: all 0.3s ease;
+}

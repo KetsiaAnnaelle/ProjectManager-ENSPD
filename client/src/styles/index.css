@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import './variables.css'; /* On importe toutes nos belles couleurs */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Réinitialisation de base pour que le site soit pareil sur tous les navigateurs */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif; /* Police moderne recommandée */
+}
+
+/* Style de la page complète */
+body {
+  background-color: var(--couleur-fond-application);
+  color: var(--couleur-texte-principal);
+  line-height: 1.6;
+}
+
+/* Liens élégants sans soulignements moches */
+a {
+  text-decoration: none;
+  color: var(--couleur-bleu-accent);
+  transition: var(--transition-douce);
+}
+a:hover {
+  color: var(--couleur-rouge-primaire); /* Rouge au survol des liens */
+}
+
+/* Modèles pour de jolis boutons partout dans le site */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--arrondi-bouton);
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: var(--transition-douce);
+}
+
+.btn-primaire {
+  background-color: var(--couleur-bleu-primaire);
+  color: var(--couleur-blanc-pur);
+}
+.btn-primaire:hover {
+  background-color: var(--couleur-bleu-clair);
+  transform: translateY(-2px); /* Petite animation : le bouton monte */
+  box-shadow: var(--ombre-legere);
+}
+
+.btn-rouge {
+  background-color: var(--couleur-rouge-primaire);
+  color: var(--couleur-blanc-pur);
+}
+.btn-rouge:hover {
+  background-color: var(--couleur-rouge-fonce);
+  transform: translateY(-2px);
+}
+
+/* Titres */
+h1, h2, h3 {
+  color: var(--couleur-bleu-primaire);
+}
+
+/* Utilitaires de conteneur */
+.conteneur-formulaire {
+  background: var(--couleur-blanc-pur);
+  padding: 30px;
+  border-radius: var(--arrondi-carte);
+  box-shadow: var(--ombre-legere);
+  max-width: 400px;
+  margin: 50px auto;
+}
+
+.champ-saisie {
+  width: 100%;
+  padding: 12px 15px;
+  margin: 10px 0;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--arrondi-bouton);
+  outline: none;
+  transition: var(--transition-douce);
+}
+.champ-saisie:focus {
+  border-color: var(--couleur-bleu-primaire);
+  box-shadow: 0 0 0 3px rgba(29, 53, 87, 0.2); /* Halo bleu clair quand on clique */
+}
