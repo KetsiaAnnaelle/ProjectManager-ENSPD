@@ -161,9 +161,9 @@ const LandingPage = () => {
             <section className="py-32 bg-white relative z-20 overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center max-w-3xl mx-auto mb-20 reveal-on-scroll">
-                        <div className="bg-blue-50 text-blue-600 font-bold inline-flex px-4 py-1.5 rounded-full text-sm mb-4">
+                        {/* <div className="bg-blue-50 text-blue-600 font-bold inline-flex px-4 py-1.5 rounded-full text-sm mb-4">
                             <Zap className="h-4 w-4 mr-2" /> Fonctionnalités
-                        </div>
+                        </div> */}
                         <h2 className="text-4xl lg:text-5xl font-extrabold text-neutral-900 mb-6 font-sans">Tout ce dont vous avez besoin</h2>
                         <p className="text-xl text-neutral-600 font-medium">
                             Une interface qui va à l'essentiel et révèle toute sa puissance.
@@ -231,7 +231,7 @@ const LandingPage = () => {
                             <ul className="space-y-6 pt-6 reveal-on-scroll reveal-delay-300">
                                 {[
                                     "Accès 100% protégé et sécurisé", 
-                                    "Hébergement de données en Europe", 
+                                    "Hébergement de données ", 
                                     "Support technique réactif 24/7"
                                 ].map((item, idx) => (
                                     <li key={idx} className="flex items-center text-lg font-medium text-neutral-200">

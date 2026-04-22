@@ -34,8 +34,9 @@ const ModeleTache = {
     // Ajouter une nouvelle tâche à un projet et créer ses assignations
     creer: async (idProjet, titre, description, tableauAssignations, statut, echeance) => {
         const dateEcheance = echeance ? echeance : null;
+        const descValid = description ? description : null;
         const requeteSql = 'INSERT INTO taches (projet_id, titre, description, statut, echeance) VALUES (?, ?, ?, ?, ?)';
-        const [resultat] = await baseDeDonnees.execute(requeteSql, [idProjet, titre, description, statut, dateEcheance]);
+        const [resultat] = await baseDeDonnees.execute(requeteSql, [idProjet, titre, descValid, statut, dateEcheance]);
         const idNouvelleTache = resultat.insertId;
 
         // Gérer les multiples assignations

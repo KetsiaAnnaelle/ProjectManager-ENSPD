@@ -55,3 +55,16 @@ CREATE TABLE IF NOT EXISTS `tache_assignations` (
   FOREIGN KEY (`tache_id`) REFERENCES `taches`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateurs`(`id`) ON DELETE CASCADE
 );
+
+-- Table des Commentaires
+-- Permet aux utilisateurs d'échanger sur une tâche
+
+CREATE TABLE IF NOT EXISTS `commentaires` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `tache_id` INT NOT NULL,
+  `utilisateur_id` INT NOT NULL,
+  `contenu` TEXT NOT NULL,
+  `date_creation` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`tache_id`) REFERENCES `taches`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateurs`(`id`) ON DELETE CASCADE
+);

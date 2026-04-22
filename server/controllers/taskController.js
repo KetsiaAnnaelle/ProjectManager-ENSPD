@@ -39,6 +39,14 @@ const ControllerTache = {
             const tableauAssignations = Array.isArray(assignes) ? assignes : (assignes ? [assignes] : []);
 
             const idNouvelleTache = await ModeleTache.creer(idProjet, titre, description, tableauAssignations, statutFinal, echeance);
+            
+            // WebSockets: Notifier les membres du projet
+            const io = requete.app.get('io');
+            if (io) {
+                // On pourrait envoyer la tâche complète récupérée depuis la BD
+                io.to(`projet_${idProjet}`).emit('NOUVELLE_TACHE', { idTache: idNouvelleTache, projet_id: idProjet });
+            }
+
             reponse.status(201).json({ message: "La tâche a bien été créée.", idTache: idNouvelleTache });
         } catch (erreur) {
             console.error("Erreur nouvelleTache: ", erreur);
@@ -53,6 +61,13 @@ const ControllerTache = {
             const { statut } = requete.body;
 
             await ModeleTache.changerStatut(idTache, statut);
+
+            // WebSockets: Informer la room (besoin de l'idProjet, donc on l'envoie côté front ou on cherche)
+            const io = requete.app.get('io');
+            if (io) {
+                io.emit('STATUT_TACHE_MAJ', { idTache, statut });
+            }
+
             reponse.status(200).json({ message: "Le statut de la tâche a été mis à jour." });
         } catch (erreur) {
             console.error("Erreur miseAJourStatut: ", erreur);

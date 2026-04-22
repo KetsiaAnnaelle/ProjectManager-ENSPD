@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, AuthContext } from './store/AuthContext';
 import { ThemeProvider } from './store/ThemeContext';
+import { Toaster } from 'react-hot-toast';
 
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
@@ -17,6 +18,7 @@ import ProjectDetails from './pages/ProjectDetails';
 function App() {
   return (
     <ThemeProvider>
+      <Toaster position="top-right" />
       <AuthProvider>
       <BrowserRouter>
         <Routes>

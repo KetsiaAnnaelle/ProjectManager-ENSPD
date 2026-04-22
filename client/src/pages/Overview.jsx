@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import api from '../services/api';
 import { AuthContext } from '../store/AuthContext';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FolderKanban, CheckSquare, Users, TrendingUp } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts';
 
 const Overview = () => {
     const { utilisateur } = useContext(AuthContext);
@@ -97,9 +98,25 @@ const Overview = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-                {/* On pourrait ajouter ici des graphiques, les tâches récentes, etc. */}
-                <Card className="border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm col-span-1 lg:col-span-2 p-8 text-center text-neutral-500">
-                    L'activité récente de votre équipe apparaîtra ici prochainement.
+                <Card className="border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm col-span-1 lg:col-span-2">
+                    <CardHeader>
+                        <CardTitle className="text-xl font-bold text-slate-800">Aperçu Ratios des Tâches</CardTitle>
+                    </CardHeader>
+                    <CardContent className="h-[350px] w-full pt-4">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={[
+                                { name: 'Toutes les Tâches', Assignées: stats.tachesAssignees, Accomplies: stats.tachesEffectuees }
+                            ]} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                <XAxis dataKey="name" axisLine={false} tickLine={false} />
+                                <YAxis axisLine={false} tickLine={false} />
+                                <Tooltip cursor={{fill: 'transparent'}} />
+                                <Legend />
+                                <Bar dataKey="Assignées" fill="#6366f1" radius={[4, 4, 0, 0]} />
+                                <Bar dataKey="Accomplies" fill="#10b981" radius={[4, 4, 0, 0]} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </CardContent>
                 </Card>
             </div>
         </div>
