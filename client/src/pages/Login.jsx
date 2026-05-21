@@ -53,10 +53,10 @@ const Login = () => {
         <div className="flex min-h-screen bg-slate-50 items-center justify-center p-4">
             <div className="w-full max-w-md animate-slide-up">
                 <Card className="bg-white border-0 shadow-2xl shadow-slate-200/50 rounded-2xl overflow-hidden">
-                    <div className="h-2 bg-gradient-to-r from-blue-600 via-blue-500 to-red-500"></div>
+                    <div className="h-2 bg-gradient-to-r from-red-600 via-red-500 to-red-500"></div>
                     <CardHeader className="space-y-4 text-center pb-6 pt-10">
                         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
-                            <FolderKanban className="h-8 w-8" />
+                            <img src='/images/IMG_0806.jpeg' className="h-22 w-22" />
                         </div>
                         <div className="space-y-2">
                             <CardTitle className="text-3xl font-bold tracking-tight text-slate-900">Bon retour !</CardTitle>

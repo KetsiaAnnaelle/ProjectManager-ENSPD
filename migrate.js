@@ -14,7 +14,20 @@ async function executerMigration() {
         );
         `;
         await db.execute(query);
-        console.log("Migration réussie : Table commentaires créée !");
+
+        try {
+            await db.execute('ALTER TABLE projets ADD COLUMN date_echeance DATE DEFAULT NULL');
+        } catch (e) { /* Ignore si existe déjà */ }
+        
+        try {
+            await db.execute('ALTER TABLE projets ADD COLUMN fichier_cahier_charges VARCHAR(255) DEFAULT NULL');
+        } catch (e) { /* Ignore */ }
+
+        try {
+            await db.execute('ALTER TABLE taches ADD COLUMN fichier_attache VARCHAR(255) DEFAULT NULL');
+        } catch (e) { /* Ignore */ }
+
+        console.log("Migration réussie : Table commentaires créée et colonnes ajoutées !");
         process.exit(0);
     } catch (e) {
         console.error("Erreur migration:", e);

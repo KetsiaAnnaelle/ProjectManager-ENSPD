@@ -73,9 +73,9 @@ const LandingPage = () => {
             <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/90 dark:bg-neutral-950/90 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800 shadow-sm py-3' : 'bg-transparent py-5'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
                     <div className="flex items-center gap-2 animate-fade-in" style={{ animationDelay: '100ms', animationFillMode: 'both' }}>
-                        <div className="bg-blue-600 p-2 rounded-xl shadow-lg shadow-blue-600/30">
-                            <FolderKanban className="h-6 w-6 text-white" />
-                        </div>
+                        {/* <div className="bg-blue-600 p-2 rounded-xl shadow-lg shadow-blue-600/30"> */}
+                            <img src='/images/IMG_0806.jpeg' className="h-12 w-12"/>
+                        {/* </div> */}
                         <span className="text-xl font-extrabold text-neutral-900 dark:text-white tracking-tight">ProjetManager</span>
                     </div>
                     <div className="flex items-center gap-4 animate-fade-in" style={{ animationDelay: '200ms', animationFillMode: 'both' }}>

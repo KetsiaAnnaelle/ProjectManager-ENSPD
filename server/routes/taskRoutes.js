@@ -4,6 +4,7 @@ const { body } = require('express-validator');
 const ControllerTache = require('../controllers/taskController');
 const { verifierValidation } = require('../middleware/validateMiddleware');
 const { protegerRoute } = require('../middleware/authMiddleware');
+const upload = require('../middleware/uploadMiddleware');
 
 // Sécurité générale pour s'assurer que c'est un membre connecté
 router.use(protegerRoute);
@@ -26,5 +27,8 @@ router.patch('/:idTache/statut', [
 
 // (GET /api/taches/liste/toutes) -> Obtenir de manière globale
 router.get('/liste/toutes', ControllerTache.toutesLesTaches);
+
+// (POST /api/taches/:idTache/upload) -> Ajouter un fichier à la tâche
+router.post('/:idTache/upload', upload.single('fichier'), ControllerTache.uploadFichierTache);
 
 module.exports = router;

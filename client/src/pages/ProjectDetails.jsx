@@ -6,10 +6,14 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, CheckCircle2, Clock, CircleDashed, PlusCircle, Users, CalendarIcon, Filter, MessageSquare, GripVertical } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Clock, CircleDashed, PlusCircle, Users, CalendarIcon, Filter, MessageSquare, GripVertical, Download, FileText } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { io } from 'socket.io-client';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import TaskModal from '../components/TaskModal';
+import ProjectCalendar from '../components/ProjectCalendar';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const ProjectDetails = () => {
     const { id } = useParams();
@@ -32,6 +36,11 @@ const ProjectDetails = () => {
     // States pour les filtres
     const [filtreStatut, setFiltreStatut] = useState('Tous');
     const [filtreMembre, setFiltreMembre] = useState('Tous');
+    const [vueActive, setVueActive] = useState('kanban'); // 'kanban' ou 'calendrier'
+
+    // States pour Modal et Fichier
+    const [tacheSelectionnee, setTacheSelectionnee] = useState(null);
+    const [fichierCahier, setFichierCahier] = useState(null);
 
     const chargerDonnees = async () => {
         setChargement(true);
@@ -120,6 +129,58 @@ const ProjectDetails = () => {
         }
     };
 
+    const handleUploadCahier = async () => {
+        if (!fichierCahier) return;
+        const formData = new FormData();
+        formData.append('fichier', fichierCahier);
+        try {
+            const res = await api.post(`/projets/${id}/upload`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            toast.success("Cahier des charges uploadé !");
+            setProjet(prev => ({ ...prev, fichier_cahier_charges: res.data.fichier_cahier_charges }));
+            setFichierCahier(null);
+        } catch (err) {
+            toast.error("Erreur lors de l'upload du cahier des charges.");
+        }
+    };
+
+    const genererPDF = () => {
+        const doc = new jsPDF();
+        
+        // En-tête du document
+        doc.setFontSize(22);
+        doc.setTextColor(220, 38, 38); // Rouge
+        doc.text("Rapport de Projet", 14, 20);
+        
+        doc.setFontSize(16);
+        doc.setTextColor(30, 58, 138); // Bleu
+        doc.text(projet.titre, 14, 30);
+        
+        doc.setFontSize(11);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Description : ${projet.description || 'N/A'}`, 14, 40);
+        
+        // Tableau des tâches
+        const data = taches.map(t => [
+            t.titre,
+            t.statut,
+            formaterDate(t.echeance),
+            t.assignes?.map(a => a.nom).join(', ') || 'Aucun'
+        ]);
+
+        doc.autoTable({
+            startY: 50,
+            head: [['Tâche', 'Statut', 'Échéance', 'Assigné à']],
+            body: data,
+            theme: 'grid',
+            headStyles: { fillColor: [37, 99, 235] }, // Bleu Tailwind
+            styles: { fontSize: 10 }
+        });
+
+        doc.save(`Projet_${projet.titre.replace(/\\s+/g, '_')}.pdf`);
+    };
+
     const formaterDate = (dateString) => {
         if (!dateString) return "Aucune";
         return new Date(dateString).toLocaleDateString('fr-FR');
@@ -175,9 +236,52 @@ const ProjectDetails = () => {
                     </Button>
                 </Link>
 
-                <div className="bg-white rounded-xl p-8 shadow-sm border border-slate-200 mb-8">
-                    <h1 className="text-3xl font-extrabold text-red-600 mb-4">{projet.titre}</h1>
-                    <p className="text-slate-600 text-lg leading-relaxed">{projet.description || "Aucune description"}</p>
+                <div className="bg-white rounded-xl p-8 shadow-sm border border-slate-200 mb-8 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-2 h-full bg-blue-600"></div>
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <h1 className="text-3xl font-extrabold text-slate-800 mb-2">{projet.titre}</h1>
+                            <p className="text-slate-500 text-base leading-relaxed max-w-3xl">{projet.description || "Aucune description"}</p>
+                        </div>
+                        <Button onClick={genererPDF} className="bg-red-600 hover:bg-red-700 text-white shadow-md">
+                            <Download className="mr-2 h-4 w-4" /> Exporter PDF
+                        </Button>
+                    </div>
+                    
+                    {/* Section Cahier des charges */}
+                    <div className="mt-6 pt-6 border-t border-slate-100">
+                        <h3 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+                            <FileText className="w-4 h-4 text-slate-400" />
+                            Cahier des charges
+                        </h3>
+                        <div className="flex items-center gap-4 flex-wrap">
+                            {projet.fichier_cahier_charges ? (
+                                <a 
+                                    href={`http://localhost:5000${projet.fichier_cahier_charges}`} 
+                                    target="_blank" 
+                                    rel="noreferrer"
+                                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors border border-blue-200 font-medium text-sm"
+                                >
+                                    <Download className="w-4 h-4" /> Consulter le document
+                                </a>
+                            ) : (
+                                <span className="text-sm text-slate-500 italic">Aucun document uploadé.</span>
+                            )}
+                            
+                            {utilisateur?.role === 'admin' && (
+                                <div className="flex items-center gap-2 ml-auto">
+                                    <input 
+                                        type="file" 
+                                        onChange={(e) => setFichierCahier(e.target.files[0])}
+                                        className="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer border border-slate-200 rounded-md"
+                                    />
+                                    <Button size="sm" onClick={handleUploadCahier} disabled={!fichierCahier} className="bg-slate-800 hover:bg-slate-900 text-white">
+                                        Uploader
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
@@ -214,8 +318,26 @@ const ProjectDetails = () => {
                             </div>
                         </div>
 
-                        {/* Interface Kanban Drag & Drop */}
-                        {tachesFiltrees.length === 0 ? (
+                        {/* Toggle Vue */}
+                        <div className="flex bg-slate-100 p-1 rounded-lg w-fit mb-4 border border-slate-200">
+                            <button 
+                                onClick={() => setVueActive('kanban')} 
+                                className={`px-4 py-2 text-sm font-semibold rounded-md transition-all ${vueActive === 'kanban' ? 'bg-white shadow text-blue-600' : 'text-slate-500 hover:text-slate-700'}`}
+                            >
+                                Vue Tableau (Kanban)
+                            </button>
+                            <button 
+                                onClick={() => setVueActive('calendrier')} 
+                                className={`px-4 py-2 text-sm font-semibold rounded-md transition-all ${vueActive === 'calendrier' ? 'bg-white shadow text-blue-600' : 'text-slate-500 hover:text-slate-700'}`}
+                            >
+                                Vue Calendrier
+                            </button>
+                        </div>
+
+                        {/* Interface Principale (Kanban ou Calendrier) */}
+                        {vueActive === 'calendrier' ? (
+                            <ProjectCalendar taches={tachesFiltrees} onTacheClick={setTacheSelectionnee} />
+                        ) : tachesFiltrees.length === 0 ? (
                             <div className="bg-white border border-slate-200 border-dashed rounded-xl p-12 text-center text-slate-500 shadow-sm">
                                 Aucune tâche ne correspond à ces critères.
                             </div>
@@ -246,7 +368,8 @@ const ProjectDetails = () => {
                                                                     <div
                                                                         ref={provided.innerRef}
                                                                         {...provided.draggableProps}
-                                                                        className={`bg-white border ${snapshot.isDragging ? 'border-blue-400 shadow-lg scale-105' : 'border-slate-200 shadow-sm'} p-4 rounded-xl mb-3 hover:border-blue-300 transition-all cursor-default group`}
+                                                                        onClick={() => setTacheSelectionnee(tache)}
+                                                                        className={`bg-white border ${snapshot.isDragging ? 'border-blue-400 shadow-lg scale-105' : 'border-slate-200 shadow-sm'} p-4 rounded-xl mb-3 hover:border-blue-300 transition-all cursor-pointer group`}
                                                                     >
                                                                         <div className="flex justify-between items-start mb-2 gap-2">
                                                                             <span className={`text-base font-bold leading-tight break-words pr-2 ${tache.statut === 'Terminé' ? 'line-through text-slate-400' : 'text-slate-800'}`}>
@@ -368,6 +491,14 @@ const ProjectDetails = () => {
                     </div>
                     )}
                 </div>
+
+                {tacheSelectionnee && (
+                    <TaskModal 
+                        tache={tacheSelectionnee} 
+                        projetId={id} 
+                        onClose={() => setTacheSelectionnee(null)} 
+                    />
+                )}
             </main>
         </div>
     );

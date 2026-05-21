@@ -1,5 +1,7 @@
 const ModeleTache = require('../models/Task');
 const ModeleProjet = require('../models/Project');
+const ModeleHistorique = require('../models/History');
+const ModeleNotification = require('../models/Notification');
 
 const ControllerTache = {
     // Obtenir toutes les tâches d'un projet ciblé
@@ -40,11 +42,22 @@ const ControllerTache = {
 
             const idNouvelleTache = await ModeleTache.creer(idProjet, titre, description, tableauAssignations, statutFinal, echeance);
             
-            // WebSockets: Notifier les membres du projet
+            // Historique de l'action
+            const adminId = requete.utilisateur ? requete.utilisateur.id : projetExistant.createur_id; // Secours si l'auteur n'est pas dans requete
+            await ModeleHistorique.ajouter(adminId, `Création de tâche: ${titre}`, 'tache', idNouvelleTache, `Projet: ${projetExistant.titre}`);
+
+            // WebSockets & Notifications individuelles
             const io = requete.app.get('io');
             if (io) {
-                // On pourrait envoyer la tâche complète récupérée depuis la BD
+                // Notifier tout le projet
                 io.to(`projet_${idProjet}`).emit('NOUVELLE_TACHE', { idTache: idNouvelleTache, projet_id: idProjet });
+            }
+
+            for(let assigneeId of tableauAssignations) {
+                await ModeleNotification.creer(assigneeId, `Vous avez reçu une nouvelle tâche : ${titre}`, 'assignation', `/projects/${idProjet}`);
+                if (io) {
+                    io.to(`user_${assigneeId}`).emit('NOUVELLE_NOTIFICATION');
+                }
             }
 
             reponse.status(201).json({ message: "La tâche a bien été créée.", idTache: idNouvelleTache });
@@ -61,6 +74,10 @@ const ControllerTache = {
             const { statut } = requete.body;
 
             await ModeleTache.changerStatut(idTache, statut);
+
+            // Historique
+            const auteurId = requete.utilisateur ? requete.utilisateur.id : 1; 
+            await ModeleHistorique.ajouter(auteurId, `Mise à jour du statut en: ${statut}`, 'tache', idTache, '');
 
             // WebSockets: Informer la room (besoin de l'idProjet, donc on l'envoie côté front ou on cherche)
             const io = requete.app.get('io');
@@ -110,6 +127,35 @@ const ControllerTache = {
         } catch (erreur) {
             console.error("Erreur toutesLesTaches: ", erreur);
             reponse.status(500).json({ erreur: "Erreur serveur." });
+        }
+    },
+
+    // Uploader un fichier pour une tâche
+    uploadFichierTache: async (requete, reponse) => {
+        try {
+            const idTache = requete.params.idTache;
+            
+            if (!requete.file) {
+                return reponse.status(400).json({ erreur: "Aucun fichier fourni." });
+            }
+
+            const cheminFichier = `/uploads/${requete.file.filename}`;
+            await ModeleTache.modifierFichier(idTache, cheminFichier);
+
+            // Historique
+            const auteurId = requete.utilisateur ? requete.utilisateur.id : 1;
+            await ModeleHistorique.ajouter(auteurId, `Upload de fichier pour la tâche ${idTache}`, 'tache', idTache, cheminFichier);
+
+            // Websocket event (optional but good for realtime updates)
+            const io = requete.app.get('io');
+            if (io) {
+                io.emit('FICHIER_TACHE_MAJ', { idTache, cheminFichier });
+            }
+
+            reponse.status(200).json({ message: "Fichier uploadé.", cheminFichier });
+        } catch (erreur) {
+            console.error("Erreur uploadFichierTache:", erreur);
+            reponse.status(500).json({ erreur: "Erreur lors de l'upload du fichier." });
         }
     }
 };

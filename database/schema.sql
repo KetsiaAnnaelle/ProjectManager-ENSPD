@@ -26,6 +26,8 @@ CREATE TABLE IF NOT EXISTS `projets` (
   `description` TEXT, -- Explication détaillée du projet
   `createur_id` INT NOT NULL, -- L'identifiant de l'utilisateur qui a créé le projet
   `date_creation` TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Date automatique de création
+  `date_echeance` DATE, -- La date limite pour le projet complet
+  `fichier_cahier_charges` VARCHAR(255), -- Chemin vers le cahier des charges uploadé
   -- On crée une relation avec la table utilisateurs
   FOREIGN KEY (`createur_id`) REFERENCES `utilisateurs`(`id`) ON DELETE CASCADE
 );
@@ -41,6 +43,7 @@ CREATE TABLE IF NOT EXISTS `taches` (
   `statut` ENUM('À faire', 'En cours', 'Terminé') NOT NULL DEFAULT 'À faire', -- L'état d'avancement
   `echeance` DATE, -- La date limite pour terminer la tâche
   `date_creation` TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Date de création de la tâche
+  `fichier_attache` VARCHAR(255), -- Chemin vers un fichier attaché à la tâche
   -- Relations avec les autres tables
   FOREIGN KEY (`projet_id`) REFERENCES `projets`(`id`) ON DELETE CASCADE
 );

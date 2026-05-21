@@ -56,6 +56,12 @@ const ModeleTache = {
     changerStatut: async (idTache, nouveauStatut) => {
         const requeteSql = 'UPDATE taches SET statut = ? WHERE id = ?';
         await baseDeDonnees.execute(requeteSql, [nouveauStatut, idTache]);
+    },
+
+    // Ajouter ou modifier le fichier attaché
+    modifierFichier: async (idTache, cheminFichier) => {
+        const requeteSql = 'UPDATE taches SET fichier_attache = ? WHERE id = ?';
+        await baseDeDonnees.execute(requeteSql, [cheminFichier, idTache]);
     }
 };
 

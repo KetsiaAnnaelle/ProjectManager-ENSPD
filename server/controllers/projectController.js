@@ -39,11 +39,11 @@ const ControllerProjet = {
                 return reponse.status(403).json({ erreur: "Seuls les administrateurs peuvent créer un projet." });
             }
 
-            const { titre, description } = requete.body;
+            const { titre, description, date_echeance } = requete.body;
             // On récupère l'identifiant du créateur (Admin)
             const createurId = profilUtilisateur.id; 
 
-            const idNouveauProjet = await ModeleProjet.creer(titre, description, createurId);
+            const idNouveauProjet = await ModeleProjet.creer(titre, description, createurId, date_echeance);
             
             reponse.status(201).json({ 
                 message: "Projet créé avec succès.", 
@@ -59,7 +59,7 @@ const ControllerProjet = {
     modifierProjet: async (requete, reponse) => {
         try {
             const idProjet = requete.params.id;
-            const { titre, description } = requete.body;
+            const { titre, description, date_echeance } = requete.body;
             const profilUtilisateur = requete.utilisateur; // Récupéré du token de connexion
 
             // On s'assure d'abord que le projet existe
@@ -73,7 +73,7 @@ const ControllerProjet = {
                 return reponse.status(403).json({ erreur: "Vous n'avez pas le droit de modifier ce projet." });
             }
 
-            await ModeleProjet.modifier(idProjet, titre, description);
+            await ModeleProjet.modifier(idProjet, titre, description, date_echeance);
             reponse.status(200).json({ message: "Le projet a été bien mis à jour." });
         } catch (erreur) {
             console.error("Erreur modifierProjet: ", erreur);
@@ -102,6 +102,35 @@ const ControllerProjet = {
         } catch (erreur) {
             console.error("Erreur supprimerProjet: ", erreur);
             reponse.status(500).json({ erreur: "Erreur lors de la suppression." });
+        }
+    },
+
+    // Uploader un cahier des charges
+    uploadCahierCharges: async (requete, reponse) => {
+        try {
+            const idProjet = requete.params.id;
+            const profilUtilisateur = requete.utilisateur;
+
+            if (profilUtilisateur.role !== 'admin') {
+                return reponse.status(403).json({ erreur: "Seuls les administrateurs peuvent ajouter un cahier des charges." });
+            }
+
+            if (!requete.file) {
+                return reponse.status(400).json({ erreur: "Aucun fichier n'a été fourni." });
+            }
+
+            // Le chemin relatif du fichier pour y accéder via l'URL (ex: /uploads/nomfichier.pdf)
+            const cheminFichier = `/uploads/${requete.file.filename}`;
+
+            await ModeleProjet.modifierFichier(idProjet, cheminFichier);
+            
+            reponse.status(200).json({ 
+                message: "Cahier des charges uploadé avec succès.",
+                fichier_cahier_charges: cheminFichier
+            });
+        } catch (erreur) {
+            console.error("Erreur uploadCahierCharges: ", erreur);
+            reponse.status(500).json({ erreur: "Erreur lors de l'upload du fichier." });
         }
     }
 };

@@ -26,6 +26,12 @@ io.on('connection', (socket) => {
         console.log(`Client ${socket.id} a rejoint la salle : projet_${projetId}`);
     });
 
+    // Option pour les notifications utilisateur
+    socket.on('login', (userId) => {
+        socket.join(`user_${userId}`);
+        console.log(`Client ${socket.id} identifié comme utilisateur : ${userId}`);
+    });
+
     socket.on('disconnect', () => {
         console.log('Client déconnecté :', socket.id);
     });
@@ -38,6 +44,10 @@ app.set('io', io);
 app.use(cors());
 app.use(express.json());
 
+// Servir les fichiers uploadés publiquement
+const path = require('path');
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Petite route de test
 app.get('/api', (requete, reponse) => {
     reponse.send("Bienvenue sur l'API de gestion de projet avec WebSockets !");
@@ -49,6 +59,8 @@ const routesProjets = require('./routes/projectRoutes');
 const routesTaches = require('./routes/taskRoutes');
 const routesUtilisateurs = require('./routes/userRoutes');
 const routesCommentaires = require('./routes/commentRoutes');
+const routesNotifications = require('./routes/notificationRoutes');
+const routesHistorique = require('./routes/historyRoutes');
 
 // Définitions des URL de base
 app.use('/api/auth', routesAuthentification); 
@@ -56,6 +68,8 @@ app.use('/api/projets', routesProjets);
 app.use('/api/taches', routesTaches); 
 app.use('/api/utilisateurs', routesUtilisateurs); 
 app.use('/api/commentaires', routesCommentaires);
+app.use('/api/notifications', routesNotifications);
+app.use('/api/historique', routesHistorique);
 
 // Définition du port
 const portServeur = process.env.PORT || 5000;

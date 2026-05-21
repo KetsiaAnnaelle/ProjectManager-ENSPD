@@ -22,16 +22,24 @@ const ModeleProjet = {
     },
 
     // Fonction pour créer un nouveau projet
-    creer: async (titre, description, idCreateur) => {
-        const requeteSql = 'INSERT INTO projets (titre, description, createur_id) VALUES (?, ?, ?)';
-        const [resultat] = await baseDeDonnees.execute(requeteSql, [titre, description, idCreateur]);
+    creer: async (titre, description, idCreateur, date_echeance) => {
+        const requeteSql = 'INSERT INTO projets (titre, description, createur_id, date_echeance) VALUES (?, ?, ?, ?)';
+        const echeance = date_echeance || null;
+        const [resultat] = await baseDeDonnees.execute(requeteSql, [titre, description, idCreateur, echeance]);
         return resultat.insertId; // Retourne juste l'ID du nouveau projet
     },
 
     // Fonction pour modifier un projet existant
-    modifier: async (idProjet, titre, description) => {
-        const requeteSql = 'UPDATE projets SET titre = ?, description = ? WHERE id = ?';
-        await baseDeDonnees.execute(requeteSql, [titre, description, idProjet]);
+    modifier: async (idProjet, titre, description, date_echeance) => {
+        const echeance = date_echeance || null;
+        const requeteSql = 'UPDATE projets SET titre = ?, description = ?, date_echeance = ? WHERE id = ?';
+        await baseDeDonnees.execute(requeteSql, [titre, description, echeance, idProjet]);
+    },
+
+    // Fonction pour mettre à jour le fichier du cahier des charges
+    modifierFichier: async (idProjet, cheminFichier) => {
+        const requeteSql = 'UPDATE projets SET fichier_cahier_charges = ? WHERE id = ?';
+        await baseDeDonnees.execute(requeteSql, [cheminFichier, idProjet]);
     },
 
     // Fonction pour supprimer un projet

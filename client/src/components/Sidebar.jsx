@@ -34,11 +34,11 @@ const Sidebar = () => {
     const SidebarContent = () => (
         <>
             {/* Logo */}
-            <div className="h-16 flex items-center px-6 border-b border-blue-800 dark:border-blue-900 bg-blue-900 dark:bg-gray-900 flex-shrink-0">
+            <div className="h-16 flex items-center px-6 border-b border-blue-800 dark:border-blue-900 bg-white-900 dark:bg-gray-900 flex-shrink-0">
                 <div className="w-8 h-8 rounded bg-red-600 flex items-center justify-center mr-3">
-                    <FolderKanban className="h-4 w-4 text-white" />
+                    <img src='/images/IMG_0806.jpeg' className="h-10 w-10" />
                 </div>
-                <span className="text-xl font-bold tracking-tight text-white">ProjetManager</span>
+                <span className="text-xl font-bold tracking-tight text-red">ProjetManager</span>
             </div>
 
             {/* Navigation Menus */}
@@ -92,7 +92,7 @@ const Sidebar = () => {
                 <div className="flex items-center justify-between px-4 h-16">
                     <div className="flex items-center gap-2">
                         <div className="w-8 h-8 rounded bg-red-600 flex items-center justify-center">
-                            <FolderKanban className="h-4 w-4 text-white" />
+                            <img src='/images/IMG_0806.jpeg' className="h-10 w-10"/>
                         </div>
                         <span className="text-lg font-bold tracking-tight text-white">ProjetManager</span>
                     </div>
@@ -131,7 +131,7 @@ const Sidebar = () => {
                 <div className="flex items-center justify-between p-4 border-b border-blue-800 dark:border-blue-900">
                     <div className="flex items-center gap-2">
                         <div className="w-8 h-8 rounded bg-red-600 flex items-center justify-center">
-                            <FolderKanban className="h-4 w-4 text-white" />
+                            <img src='/images/IMG_0806.jpeg' className="h-10 w-10" />
                         </div>
                         <span className="text-lg font-bold tracking-tight text-white">Menu</span>
                     </div>

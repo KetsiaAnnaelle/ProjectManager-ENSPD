@@ -4,6 +4,7 @@ const { body } = require('express-validator');
 const ControllerProjet = require('../controllers/projectController');
 const { verifierValidation } = require('../middleware/validateMiddleware');
 const { protegerRoute } = require('../middleware/authMiddleware');
+const upload = require('../middleware/uploadMiddleware');
 
 // Toutes les requêtes concernant un projet doivent être faites par une personne connectée !
 // On applique "protegerRoute" de manière globale à ce fichier.
@@ -30,5 +31,8 @@ router.put('/:id', [
 
 // (DELETE /api/projets/:id) -> Supprimer un projet
 router.delete('/:id', ControllerProjet.supprimerProjet);
+
+// (POST /api/projets/:id/upload) -> Uploader le cahier des charges
+router.post('/:id/upload', upload.single('fichier'), ControllerProjet.uploadCahierCharges);
 
 module.exports = router;
